@@ -1,0 +1,25 @@
+{ 
+  "compilerOptions": { 
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "types": [],
+    "strictPropertyInitialization": false,
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true, 
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true, 
+    "strict": true, 
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+    "experimentalDecorators": true, 
+    "emitDecoratorMetadata": true, 
+    "esModuleInterop": true, 
+    "forceConsistentCasingInFileNames": true 
+  }, 
+  "include": ["src/**/*"] 
+} 
