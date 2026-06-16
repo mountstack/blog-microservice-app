@@ -3,7 +3,25 @@
 A blogging platform built with a microservices architecture. <br> 
 Each service is independently deployable, communicates asynchronously via a message bus, and owns its own database.
 
----
+--- 
+
+## Folder Structure
+
+```
+blog/
+│
+├── api-gateway/
+├── user/
+├── post/
+├── comment/
+├── query/
+└── README.md 
+```
+
+Each service folder contains its own `README.md` with setup, env vars. <br>
+Each service has its own `.env`. See the `.env.example` inside each service directory for the required variables.
+
+--- 
 
 ## Services
 
@@ -38,6 +56,7 @@ All read operations go to the Query Service, which maintains its own synced data
 
 ---
 
+
 ## CQRS Pattern
 
 This project applies **Command Query Responsibility Segregation (CQRS)**:
@@ -48,7 +67,13 @@ All HTTP `GET` Request is handled by query-service.
 
 This separation means reads and writes can scale independently, and the query service can shape its data however best suits the client — without coupling to the write models.
 
----
+<div align="center">
+  <img src="./asset/cqrs_pattern.png" alt="CQRS Design Pattern" height="250">
+  <br>
+  <p><b>Figure: Command Query Responsibility Segregation (CQRS)</b></p>
+</div>
+
+--- 
 
 ## Event Bus — RabbitMQ
 
@@ -62,7 +87,7 @@ When a write service performs an action, it publishes an event:
 | `PostCreated` | post service |
 | `CommentCreated` | comment service |
 
-The query service subscribes to all events and updates its own database accordingly. <br>
+`The query service subscribes` to all events and updates its own database accordingly. <br>
 Services are fully decoupled — publishers don't know who's listening.
 
 ---
@@ -90,8 +115,10 @@ Services are fully decoupled — publishers don't know who's listening.
 - RabbitMQ
 - Docker
 
+
 ### Start RabbitMQ before any service:
 
+Start `Docker-Engine` first. Then run the below command on terminal.
 ```bash
 # Docker (quickest)
 docker run -d --hostname rabbit --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
@@ -104,24 +131,5 @@ docker run -d --hostname rabbit --name rabbitmq -p 5672:5672 -p 15672:15672 rabb
 npm install
 npm run start:dev
 ``` 
+--- 
 
-
-### Environment variables
-
-Each service has its own `.env`. See the `.env.example` inside each service directory for the required variables.
-
----
-
-## Folder Structure
-
-```
-blog/
-├── api-gateway/
-├── user/
-├── post/
-├── comment/
-├── query/
-└── README.md 
-```
-
-Each service folder contains its own `README.md` with setup, env vars.
