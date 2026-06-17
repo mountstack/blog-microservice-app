@@ -10,19 +10,6 @@ This service functions exclusively as the Read Model / Query Side of the applica
 | GET | `/post` | Get all users | 
 | GET | `/post/:id` | Get single user | 
 
-## Setup environment variables
-```bash
-cp .env
-```
-
-Fill in your `.env`:
-```env
-PORT=8010
-DB_NAME=microservice-blog-querydb 
-DB_PASSWORD=root
-JWT_SECRET=your-secret-key 
-NODE_ENV=development
-```
 
 ## Folder Structure
 
