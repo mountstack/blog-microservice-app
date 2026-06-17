@@ -84,6 +84,7 @@ When a write service performs an action, it publishes an event:
 | Event | Published by |
 |---|---|
 | `UserCreated` | user service |
+| `ProfileUpdated` | user service |
 | `PostCreated` | post service |
 | `CommentCreated` | comment service |
 
