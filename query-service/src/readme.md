@@ -45,7 +45,7 @@ src/
 ## Figure: Query Service
 
 <div align="center">
-  <img src="../../asset/query_service.png" alt="Query Service Diagram" height="300">
+  <img src="../../asset/query_service.png" alt="Query Service Diagram" height="400">
   <br>
   <p><b>Figure: High level design (HLD) of Query-service Work flow</b></p>
 </div>
