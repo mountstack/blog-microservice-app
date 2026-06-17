@@ -5,7 +5,7 @@ Each service is independently deployable, communicates asynchronously via a mess
 
 --- 
 
-## Folder Structure
+## Services Structure
 
 ```
 blog/

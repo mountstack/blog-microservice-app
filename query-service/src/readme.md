@@ -1,0 +1,64 @@
+# Blog App — Query Service 
+This service functions exclusively as the Read Model / Query Side of the application's CQRS (Command Query Responsibility Segregation) architecture. It listens asynchronously to events streamed from other microservices over RabbitMQ. 
+
+
+## API Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------| 
+| GET | `/user` | Get all users | 
+| GET | `/user/:id` | Get single user | 
+| GET | `/post` | Get all users | 
+| GET | `/post/:id` | Get single user | 
+
+## Setup environment variables
+```bash
+cp .env
+```
+
+Fill in your `.env`:
+```env
+PORT=8010
+DB_NAME=microservice-blog-querydb 
+DB_PASSWORD=root
+JWT_SECRET=your-secret-key 
+NODE_ENV=development
+```
+
+## Folder Structure
+
+```
+src/
+│
+├── config/ 
+│   ├── database.ts                 # Database connections
+│   └── rabbitmq.ts                 # RabbitMQ channel initialization
+│
+├── routes/                         
+│   ├── user.route.ts 
+│   └── post.route.ts 
+│
+├── controllers/ 
+│   ├── user.query.controller.ts 
+│   └── post.query.controller.ts 
+│
+├── entities/ 
+│   ├── UserProjection.ts
+│   ├── PostProjection.ts 
+│   └── Comments.ts 
+│
+├── events/ 
+│   └── consumer.ts                  # RabbitMQ consumers that read events & sync database 
+│
+├── middlewares/ 
+│   └── auth.ts
+│
+└── app.ts                           # Service entry point 
+```
+
+## Figure: Query Service
+
+<div align="center">
+  <img src="../../asset/query_service.png" alt="Query Service Diagram" height="300">
+  <br>
+  <p><b>Figure: High level design (HLD) of Query-service Work flow</b></p>
+</div>
