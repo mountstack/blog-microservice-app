@@ -1,5 +1,5 @@
 import express from 'express';
-import { findPostById, findPosts } from '../controllers/post.controller';
+import { findPostById, findPosts } from '../controllers/post.query.controller';
 
 export const postRouter = express.Router(); 
 

@@ -30,7 +30,7 @@ Each service has its own `.env`. See the `.env.example` inside each service dire
 | `api-gateway` | 8000 | Single entry point — routes requests to services |
 | `post` | 8001 | Post Service |
 | `comment` | 8002 | Comment Service |
-| `user` | 8003 | User Service - Registration, login, JWT auth, token refresh |
+| `user` | 8003 | User Service - Registration, login, JWT auth, token refresh <br> Profile Service - Update your profile |
 | `query-service` | 8010 | Serves all GET requests |
 
 ---
