@@ -3,8 +3,8 @@ import {
   ManyToOne, JoinColumn, 
   CreateDateColumn, UpdateDateColumn 
 } from 'typeorm';
-import { User } from './User'; 
-import { Post } from './Post'; 
+import { UserProjection } from './UserProjection'; 
+import { PostProjection } from './PostProjection'; 
 
 @Entity({ name: 'comments' })
 export class Comment {
@@ -14,11 +14,11 @@ export class Comment {
   @Column({ type: 'text' }) 
   content: string; 
 
-  @ManyToOne(() => Post, (post) => post.comments, { onDelete: 'CASCADE' }) 
-  post: Post; 
+  @ManyToOne(() => PostProjection, (post) => post.comments, { onDelete: 'CASCADE' }) 
+  post: PostProjection; 
 
-  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' }) 
-  user: User; 
+  @ManyToOne(() => UserProjection, (user) => user.comments, { onDelete: 'CASCADE' }) 
+  user: UserProjection; 
 
   @CreateDateColumn({ type: 'timestamptz' }) 
   createdAt: Date; 

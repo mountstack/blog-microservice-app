@@ -2,11 +2,11 @@ import "reflect-metadata";
 
 import { Request, Response } from "express";
 import { appDataSource } from "../config/database";
-import { Post } from "../entities/Post";
+import { PostProjection } from "../entities/PostProjection";
 
 export const findPosts = async (req: Request, res: Response) => {
   try {
-    const postRepository = appDataSource.getRepository(Post);
+    const postRepository = appDataSource.getRepository(PostProjection);
 
     const posts = await postRepository.find(); 
 
@@ -19,7 +19,7 @@ export const findPosts = async (req: Request, res: Response) => {
 
 export const findPostById = async (req: Request, res: Response) => {
   try {
-    const postRepository = appDataSource.getRepository(Post);
+    const postRepository = appDataSource.getRepository(PostProjection);
     const postId: number = parseInt(req.params.id as string, 10);
 
     const post = await postRepository.findOne({
@@ -32,7 +32,7 @@ export const findPostById = async (req: Request, res: Response) => {
       select: {
         id: true,
         title: true,
-        commentCount: true,
+        totalComments: true,
         user: {
           id: true,
           name: true,

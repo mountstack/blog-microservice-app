@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm'; 
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm'; 
 import { RefreshToken } from './RefreshToken';
+import { Profile } from './Profile';
 
 @Entity({name: 'users'})
 export class User {
@@ -17,6 +18,9 @@ export class User {
 
   @Column({ select: false, length: 100 }) 
   password: string; 
+
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile;
 
   @CreateDateColumn({ type: "timestamptz" }) 
   createdAt: Date;

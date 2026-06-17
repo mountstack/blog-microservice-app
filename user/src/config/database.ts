@@ -3,6 +3,7 @@ import "reflect-metadata";
 import dotenv from "dotenv";
 import { DataSource } from "typeorm"; 
 import { User } from "../entities/User"; 
+import { Profile } from "../entities/Profile"; 
 import { RefreshToken } from "../entities/RefreshToken";
 
 dotenv.config();
@@ -16,7 +17,7 @@ export const appDataSource = new DataSource({
   database: process.env.DB_NAME as string, 
   synchronize: true, 
   logging: ["error", "warn"], 
-  entities: [User, RefreshToken] 
+  entities: [User, Profile, RefreshToken] 
 }); 
 
 export async function connectDB() { 

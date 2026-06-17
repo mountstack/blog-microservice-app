@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
+import { EntityManager } from 'typeorm';
+
 import { appDataSource } from "../config/database";
 import { User } from "../entities/User";
 import { RefreshToken } from "../entities/RefreshToken";
 import { LessThan } from 'typeorm';
 import { publishEvent } from '../config/rabbitmq';
+import { Profile } from '../entities/Profile';
 
 const userRepository = appDataSource.getRepository(User);
 const refreshTokenRepository = appDataSource.getRepository(RefreshToken);
@@ -21,25 +24,37 @@ export const registration = async (req: Request, res: Response) => {
   const salt = await bcrypt.genSalt(10); 
   const hash = await bcrypt.hash(password, salt); 
 
-  const createdUser = userRepository.create({ email, password: hash });
-  const data = await userRepository.save(createdUser); 
+  // Save data in users & profiles table 
+  const result = await appDataSource.transaction( 
+    async (transactionalEntityManager: EntityManager) => { 
+      const newUser = transactionalEntityManager.create(User, { email, password: hash }); 
+      const savedUser = await transactionalEntityManager.save(User, newUser); 
 
+      const profileData: Partial<Profile> = { 
+        user: savedUser 
+      }; 
+
+      const newProfile = transactionalEntityManager.create(Profile, profileData); 
+      await transactionalEntityManager.save(Profile, newProfile); 
+
+      return savedUser; 
+    } 
+  ); 
 
   // Publish Event 
   publishEvent({ 
     type: "UserCreated", 
     data: { 
-      id: data.id, 
+      id: result?.id, 
       email, 
-      isSuspended: data.isSuspended, 
+      isSuspended: result?.isSuspended, 
     } 
   }); 
-  // channel.publish('blog_bus', '', Buffer.from(JSON.stringify(eventData))); 
   // --- END --- 
 
   res.json({ 
     message: 'User created successfully', 
-    data 
+    result 
   }) 
 } 
 

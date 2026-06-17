@@ -2,8 +2,8 @@ import "reflect-metadata";
 
 import dotenv from "dotenv";
 import { DataSource } from "typeorm"; 
-import { User } from "../entities/User";
-import { Post } from "../entities/Post";
+import { UserProjection } from "../entities/UserProjection";
+import { PostProjection } from "../entities/PostProjection";
 import { Comment } from "../entities/Comment";
 
 dotenv.config();
@@ -17,7 +17,7 @@ export const appDataSource = new DataSource({
   database: process.env.DB_NAME as string, 
   synchronize: true, 
   logging: ["error", "warn"], 
-  entities: [User, Post, Comment] 
+  entities: [UserProjection, PostProjection, Comment] 
 }); 
 
 export async function connectDB() { 

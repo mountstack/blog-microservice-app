@@ -1,6 +1,6 @@
 import { Channel } from 'amqplib'; 
-import { User } from '../entities/User'; 
-import { Post } from '../entities/Post'; 
+import { UserProjection } from '../entities/UserProjection'; 
+import { PostProjection } from '../entities/PostProjection'; 
 import { Comment } from '../entities/Comment'; 
 import { appDataSource } from '../config/database'; 
 
@@ -19,8 +19,8 @@ export async function startConsumer(channel: Channel): Promise<void> {
 } 
 
 async function handleEvent(type: string, data: any) {
-  const userRepository = appDataSource.getRepository(User);
-  const postRepository = appDataSource.getRepository(Post);
+  const userRepository = appDataSource.getRepository(UserProjection);
+  const postRepository = appDataSource.getRepository(PostProjection);
   const commentRepository = appDataSource.getRepository(Comment);
 
   if (type === 'UserCreated') {
@@ -28,6 +28,7 @@ async function handleEvent(type: string, data: any) {
       const { id, email } = data;
       const newUser = userRepository.create({ id, email });
       await userRepository.save(newUser);
+      
       console.log('[UserCreated]', { id, email });
     } 
     catch (error: any) { 
@@ -35,13 +36,42 @@ async function handleEvent(type: string, data: any) {
     } 
   } 
 
+  if (type === 'ProfileUpdated') { 
+    try { 
+      const { userId, name, bio, gender, avatarUrl, phoneNumber } = data; 
+      const user = await userRepository.findOne({ where: { id: userId } }); 
+      
+      if (!user) { 
+        console.warn(`[ProfileUpdated] Warning: Projection for User ID ${userId} not found.`);
+        return; 
+      } 
+
+      if (name) user.name = name; 
+      if (bio) user.bio = bio; 
+      if (gender) user.gender = gender; 
+      if (avatarUrl) user.avatarUrl = avatarUrl; 
+      if (phoneNumber) user.phoneNumber = phoneNumber; 
+
+      await userRepository.save(user); 
+
+      console.log('[ProfileUpdated]', user); 
+    } 
+    catch (error: any) { 
+      console.error('[ProfileUpdated] failed:', error.message);
+    } 
+  } 
+
   if (type === 'PostCreated') {
     try {
       const { id, title, userId } = data;
       const user = await userRepository.findOneBy({ id: userId });
-      if (!user) throw new Error(`User ${userId} not found`);
+      if (!user) throw new Error(`User ${userId} not found`); 
+
       const newPost = postRepository.create({ id, title, user });
-      await postRepository.save(newPost);
+      await postRepository.save(newPost); 
+
+      await userRepository.increment({ id: userId }, 'totalPosts', 1);
+
       console.log('[PostCreated]', { id, title, userId });
     } 
     catch (error: any) {
@@ -54,11 +84,12 @@ async function handleEvent(type: string, data: any) {
       const { id, content, postId, userId } = data;
       const newComment = commentRepository.create({
         id, content,
-        user: { id: userId } as User,
-        post: { id: postId } as Post,
+        user: { id: userId } as UserProjection,
+        post: { id: postId } as PostProjection,
       });
       await commentRepository.save(newComment);
-      await postRepository.increment({ id: postId }, 'commentCount', 1);
+
+      await postRepository.increment({ id: postId }, 'totalComments', 1);
       console.log('[CommentCreated]', { id, postId, userId });
     } 
     catch (error: any) {
