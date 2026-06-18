@@ -5,10 +5,10 @@ This service functions exclusively as the Read Model / Query Side of the applica
 ## API Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------| 
-| GET | `/user` | Get all users | 
-| GET | `/user/:id` | Get single user | 
-| GET | `/post` | Get all users | 
-| GET | `/post/:id` | Get single user | 
+| GET | `/query/user` | Get all users | 
+| GET | `/query/user/:id` | Get single user | 
+| GET | `/query/post` | Get all users | 
+| GET | `/query/post/:id` | Get single user | 
 
 
 ## Folder Structure

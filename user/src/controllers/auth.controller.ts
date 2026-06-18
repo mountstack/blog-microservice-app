@@ -18,7 +18,7 @@ export const registration = async (req: Request, res: Response) => {
   
   const user = await userRepository.findOne({ where: { email } });
   if(user) { 
-    return res.json({ message: 'This email is already in use.' }); 
+    return res.status(400).json({ message: 'This email is already in use.' }); 
   } 
 
   const salt = await bcrypt.genSalt(10); 
@@ -118,14 +118,15 @@ export const login = async (req: Request, res: Response) => {
   }; 
 
   res.cookie('refreshToken', refreshToken, cookieOptions); 
-
+  console.log(user);
   res.status(200).json({ 
     message: "Login successful!", 
     accessToken: `Bearer ${accessToken}`, 
     user: { 
       id: user.id, 
       name: user.name, 
-      email: user.email 
+      email: user.email,
+      isSuspended: user.isSuspended,
     } 
   }); 
 } 

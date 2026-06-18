@@ -13,6 +13,7 @@ dotenv.config();
 const app: Application = express(); 
 app.use(express.json()); 
 
+
 app.post('/post', isLoggedIn, createPost); 
 
 const PORT = process.env.PORT || 8001;

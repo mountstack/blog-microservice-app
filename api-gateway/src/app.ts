@@ -1,3 +1,4 @@
+import cors from "cors";
 import dotenv from 'dotenv'; 
 import Express, { Application } from 'express'; 
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'; 
@@ -5,6 +6,12 @@ import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 dotenv.config();
 
 const app: Application = Express(); 
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+})); 
 app.use(Express.json()); 
 
 const { API_GATEWAY_PORT, USER_PORT, POST_PORT, COMMENT_PORT, QUERY_SERVICE_PORT } = process.env;
@@ -35,5 +42,5 @@ Object.entries(routes).forEach(([path, target]) => {
 });
 
 app.listen(API_GATEWAY_PORT, () => { 
-  console.log(`[API GATEWAY] Listening on port ${API_GATEWAY_PORT}`); 
+  console.log(`[API GATEWAY]: ${API_GATEWAY_PORT}`); 
 }); 
