@@ -59,13 +59,13 @@ export function CreatePostForm() {
   }
 
   return (
-    <div className="rounded-lg border bg-white p-4 shadow-sm dark:bg-gray-800">
+    <div className="rounded-lg border bg-white p-4 dark:bg-gray-800">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-start gap-3">
           <div className="flex-1 space-y-3">
             {isLoggedIn ? 
             (
-              <>
+              <> 
                 <Label htmlFor="title" className="sr-only">
                   Title
                 </Label>

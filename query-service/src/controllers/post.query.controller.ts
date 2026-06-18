@@ -8,9 +8,23 @@ export const findPosts = async (req: Request, res: Response) => {
   try {
     const postRepository = appDataSource.getRepository(PostProjection);
 
-    const posts = await postRepository.find(); 
+    const posts = await postRepository.find({ 
+      relations: { user: true }, 
+      order: { 
+        createdAt: "DESC" 
+      } 
+    }); 
 
-    res.json({ posts }); 
+    const formattedPosts = posts.map(post => ({ 
+      ...post,
+      user: { 
+        id: post.user.id,
+        name: post.user.name || `user-${post.user.id}`,
+        avatarUrl: post.user.avatarUrl
+      } 
+    })); 
+
+    res.json({ posts: formattedPosts }); 
   } 
   catch (error: any) {
     res.status(500).json({ error: error.message });

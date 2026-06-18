@@ -14,7 +14,11 @@ export class PostProjection {
   @Column({ type: 'varchar', length: 255 }) 
   title: string; 
 
-  @ManyToOne(() => UserProjection, (user) => user.posts, { onDelete: 'CASCADE' })
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => UserProjection, (user) => user.posts, { onDelete: 'CASCADE' }) 
+  @JoinColumn({ name: 'userId' }) 
   user: UserProjection; 
 
   @OneToMany(() => Comment, (comment) => comment.post)
