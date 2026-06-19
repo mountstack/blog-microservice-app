@@ -28,7 +28,7 @@ export const createPost = async (req: Request, res: Response) => {
 
     res.json({ 
       message: 'Post created successfully!', 
-      post 
+      data: post 
     }) 
   } 
   catch (error: any) { 

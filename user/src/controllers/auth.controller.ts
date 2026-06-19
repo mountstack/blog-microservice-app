@@ -118,7 +118,6 @@ export const login = async (req: Request, res: Response) => {
   }; 
 
   res.cookie('refreshToken', refreshToken, cookieOptions); 
-  console.log(user);
   res.status(200).json({ 
     message: "Login successful!", 
     accessToken: `Bearer ${accessToken}`, 

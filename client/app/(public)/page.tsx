@@ -67,7 +67,7 @@ export default async function Page() {
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-300 text-sm font-medium text-gray-700 dark:bg-gray-600 dark:text-gray-300">
                           {post.user?.name?.charAt(0).toUpperCase() || "U"}
                         </div>
-                      )}
+                      )} 
 
                       {/* User Name & Time */}
                       <div className="flex-1">
