@@ -14,7 +14,7 @@ interface Post {
 
 const bgColors = [
   "bg-gradient-to-r from-pink-500 to-rose-600", 
-  "bg-gradient-to-r from-gray-600 to-black", 
+  "bg-gradient-to-r from-gray-600 to-black to-black", 
   "bg-gradient-to-r from-teal-400 to-emerald-900", 
   "bg-gradient-to-r from-fuchsia-800 to-pink-700",
 ]; 
@@ -31,8 +31,6 @@ export default async function Page() {
   const data = await response.json();
   const posts = data.posts || data;
 
-  console.log(posts);
-
   return (
     <div className="max-w-175 mx-auto my-10">
       {
@@ -44,15 +42,15 @@ export default async function Page() {
         </div>
       }
 
-      <h2 className="text-xl font-bold pt-10 mb-4">Posts</h2>
-      {
-        posts.length === 0 ? (
-          <p>No posts found</p>
-        ) :
-          (
-            <ul className="space-y-4">
-              {posts?.map((post: Post, index: number) => {
-                const bgColor = bgColors[index % bgColors.length]
+      <h2 className="text-xl font-bold pt-10 mb-4">Posts</h2> 
+      { 
+        posts.length === 0 ? ( 
+          <p>No posts found</p> 
+        ) : 
+          ( 
+            <ul className="space-y-4"> 
+              {posts?.map((post: Post, index: number) => { 
+                const bgColor = bgColors[index % bgColors.length]; 
 
                 return (
                   <li key={post.id} className="rounded-lg border bg-white p-4 dark:bg-gray-100 dark:border-gray-800">
@@ -93,11 +91,11 @@ export default async function Page() {
                     </div>
 
                     {/* Post Content with Dynamic Background */}
-                    <div className={`mt-3 flex min-h-70 items-center justify-center rounded-lg ${bgColor}`}>
+                    <div className={`mt-3 p-5 flex min-h-80 items-center justify-center rounded-lg ${bgColor}`}>
                       <h3 className="text-center text-3xl font-semibold text-white">
-                        {post.title}
-                      </h3>
-                    </div>
+                        {post.title} 
+                      </h3> 
+                    </div> 
 
                     {/* Post Footer - Actions */}
                     <div className="mt-4 flex items-center justify-between border-t pt-3 dark:border-gray-700">
@@ -121,11 +119,11 @@ export default async function Page() {
                       )}
                     </div>
                   </li>
-                )
-              })}
-            </ul>
-          )
-      }
-    </div>
-  )
+                ) 
+              })} 
+            </ul> 
+          ) 
+      } 
+    </div> 
+  ) 
 } 

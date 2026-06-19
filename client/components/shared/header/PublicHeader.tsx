@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import Link from "next/link"; 
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from '@/lib/stores/authstore';
-import Image from "next/image";
+import { useAuthStore } from '@/lib/stores/authstore'; 
 
-export function PublicHeader() {
+export function PublicHeader() { 
   const { user, isAuthenticated } = useAuthStore();
 
   return (
