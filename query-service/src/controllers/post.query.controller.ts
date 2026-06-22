@@ -3,6 +3,7 @@ import "reflect-metadata";
 import { Request, Response } from "express";
 import { appDataSource } from "../config/database";
 import { PostProjection } from "../entities/PostProjection";
+import { Comment } from "../entities/Comment";
 
 export const findPosts = async (req: Request, res: Response) => {
   try {
@@ -33,8 +34,8 @@ export const findPosts = async (req: Request, res: Response) => {
 
 export const findPostById = async (req: Request, res: Response) => {
   try {
-    const postRepository = appDataSource.getRepository(PostProjection);
-    const postId: number = parseInt(req.params.id as string, 10);
+    const postRepository = appDataSource.getRepository(PostProjection); 
+    const postId: number = parseInt(req.params.id as string, 10); 
 
     const post = await postRepository.findOne({
       where: { id: postId },
@@ -75,3 +76,27 @@ export const findPostById = async (req: Request, res: Response) => {
   }
 }
 
+export const findCommentsByPostId = async (req: Request, res: Response) => { 
+  const commentRepository = appDataSource.getRepository(Comment); 
+  const postId: number = parseInt(req.params.id as string, 10); 
+
+  const comments = await commentRepository.find({ 
+    where: { post: { id: postId } }, 
+    relations: { user: true }, 
+    order: { createdAt: 'DESC' }, 
+    select: { 
+      id: true, 
+      content: true, 
+      createdAt: true, 
+      user: {
+        id: true, 
+        name: true, 
+        avatarUrl: true
+      }
+    } 
+  }); 
+
+  res.json({ 
+    data: comments
+  }) 
+} 
