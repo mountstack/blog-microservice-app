@@ -7,6 +7,7 @@ import { CommentModal } from "./comments/CommentModal";
 interface Post {
   id: number
   title: string
+  bgColor: string 
   totalComments: number
   createdAt: Date
   user: {
@@ -20,13 +21,6 @@ interface PostListWrapperProps {
   posts: Post[]
 }
 
-const bgColors = [
-  "bg-gradient-to-r from-pink-500 to-rose-600",
-  "bg-gradient-to-r from-gray-600 to-black",
-  "bg-gradient-to-r from-teal-400 to-emerald-900",
-  "bg-gradient-to-r from-fuchsia-800 to-pink-700",
-]
-
 export function PostListWrapper({ posts }: PostListWrapperProps) {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null); 
@@ -36,12 +30,8 @@ export function PostListWrapper({ posts }: PostListWrapperProps) {
     setIsModalOpen(true); 
   } 
 
-  const getBgColor = (index: number) => { 
-    return bgColors[index % bgColors.length]; 
-  } 
-
-  return (
-    <>
+  return ( 
+    <> 
       <PostList open={isModalOpen} posts={posts} onCommentClick={handleCommentClick} />
 
       {selectedPost && (
@@ -49,9 +39,9 @@ export function PostListWrapper({ posts }: PostListWrapperProps) {
           open={isModalOpen}
           onOpenChange={setIsModalOpen}
           post={selectedPost}
-          bgColor={getBgColor(posts.indexOf(selectedPost))}
+          bgColor={selectedPost.bgColor} 
         />
       )}
     </>
-  )
-} 
+  ) 
+}

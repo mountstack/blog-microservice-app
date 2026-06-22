@@ -63,11 +63,11 @@ async function handleEvent(type: string, data: any) {
 
   if (type === 'PostCreated') {
     try {
-      const { id, title, userId } = data;
+      const { id, title, bgColor, userId } = data;
       const user = await userRepository.findOneBy({ id: userId });
       if (!user) throw new Error(`User ${userId} not found`); 
 
-      const newPost = postRepository.create({ id, title, user });
+      const newPost = postRepository.create({ id, title, bgColor, user });
       await postRepository.save(newPost); 
 
       await userRepository.increment({ id: userId }, 'totalPosts', 1);

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/stores/authstore";
 import { apiFetch } from "@/lib/api/client";
+import { ActivePostFormModal } from "./ActivePostFormModal";
 
 export function CreatePostForm() {
   const router = useRouter();
@@ -16,8 +17,15 @@ export function CreatePostForm() {
   const [progress, setProgress] = useState(100);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const isLoggedIn = !!user;
+
+  const handleInputClick = () => {
+    if (isLoggedIn) {
+      setModalOpen(true);
+    }
+  }
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -40,12 +48,9 @@ export function CreatePostForm() {
         }),
       })
 
-      setTitle("");
-      // setMessage('Created Successfully'); 
-      // setTimeout(() => setMessage(''), 3000); 
-
-      setMessage('Created Successfully');
-      setProgress(0);
+      setTitle("");  
+      setProgress(0); 
+      setMessage('Created Successfully'); 
 
       const startTime = Date.now();
       const duration = 3000;
@@ -71,6 +76,10 @@ export function CreatePostForm() {
     }
   }
 
+  const handlePostCreated = () => {
+    router.refresh();
+  }
+
   return (
     <>
       <div className="rounded-lg border bg-white p-4 dark:bg-gray-800">
@@ -88,8 +97,9 @@ export function CreatePostForm() {
                       type="text"
                       placeholder="Post title..."
                       value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      className="h-10 border-none bg-gray-100 px-3 text-base font-medium placeholder:text-gray-400 focus-visible:ring-0 dark:bg-gray-900"
+                      onClick={handleInputClick}
+                      readOnly
+                      className="h-10 cursor-pointer border-none bg-gray-100 px-3 text-base font-medium placeholder:text-gray-400 focus-visible:ring-0 dark:bg-gray-900"
                     />
                   </>
                 ) :
@@ -109,11 +119,12 @@ export function CreatePostForm() {
 
           <div className="flex items-center justify-end border-t pt-3 dark:border-gray-700">
             <Button
-              type="submit"
-              disabled={!isLoggedIn || isLoading || !title.trim()}
+              type="button"
+              onClick={handleInputClick}
+              disabled={!isLoggedIn}
               className="min-w-30 cursor-pointer"
             >
-              {isLoading ? "Creating..." : "Create Post"}
+              Create Post
             </Button>
           </div>
         </form>
@@ -137,6 +148,13 @@ export function CreatePostForm() {
           </div>
         )
       }
+
+      {/* Modal */}
+      <ActivePostFormModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onPostCreated={handlePostCreated}
+      />
     </>
   )
-} 
+}

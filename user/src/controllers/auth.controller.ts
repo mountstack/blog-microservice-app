@@ -61,7 +61,7 @@ export const registration = async (req: Request, res: Response) => {
 export const login = async (req: Request, res: Response) => { 
   const { email, password } = req.body; 
 
-  if(!email || !password) return res.json({ message: 'Enter email & password!' });
+  if(!email || !password) return res.status(401).json({ message: 'Enter email & password!' });
 
   const user = await userRepository.findOne({ 
     where: { email }, 
@@ -73,7 +73,7 @@ export const login = async (req: Request, res: Response) => {
       isSuspended: true 
     } 
   }); 
-  if(!user) return res.json({ message: 'Invalid email or password!' }); 
+  if(!user) return res.status(401).json({ message: 'Invalid email or password!' }); 
 
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {

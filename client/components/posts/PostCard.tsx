@@ -7,6 +7,7 @@ interface PostCardProps {
   post: {
     id: number
     title: string
+    bgColor: string 
     totalComments: number
     createdAt: Date
     user: {
@@ -31,4 +32,4 @@ export function PostCard({ open, post, bgColor, onCommentClick }: PostCardProps)
       /> 
     </li> 
   ) 
-} 
+}

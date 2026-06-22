@@ -86,6 +86,7 @@ export function CommentForm({ fetchComments, postId }: CommentFormProps) {
         type="submit"
         size="sm"
         disabled={!content.trim() || isLoading}
+        className="cursor-pointer"
       >
         {isLoading ? "Posting..." : "Post"}
       </Button>

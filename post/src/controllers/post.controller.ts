@@ -6,14 +6,14 @@ import { publishEvent } from '../config/rabbitmq';
 const postRepository = appDataSource.getRepository(Post); 
 
 export const createPost = async (req: Request, res: Response) => { 
-  const { title } = req.body; 
+  const { title, bgColor } = req.body; 
   const userId = (req as any).user?.id; 
   
   if(!title) return res.json({message: "Title is required"}); 
 
   try { 
-    const post = postRepository.create({ title, userId });
-    await postRepository.save(post);
+    const post = postRepository.create({ userId, title, bgColor }); 
+    await postRepository.save(post); 
 
     // Publish Event 
     publishEvent({ 
@@ -21,7 +21,8 @@ export const createPost = async (req: Request, res: Response) => {
       data: { 
         id: post.id, 
         title: post.title, 
-        userId: post.userId 
+        userId: post.userId, 
+        bgColor: post.bgColor, 
       } 
     }); 
     // --- END --- 

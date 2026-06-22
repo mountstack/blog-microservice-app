@@ -3,6 +3,7 @@ import { PostCard } from "./PostCard"
 interface Post { 
   id: number 
   title: string 
+  bgColor: string 
   totalComments: number 
   createdAt: Date 
   user: {  
@@ -18,13 +19,6 @@ interface PostListProps {
   onCommentClick: (post: Post) => void 
 } 
 
-const bgColors = [
-  "bg-gradient-to-r from-pink-500 to-rose-600",
-  "bg-gradient-to-r from-gray-600 to-black",
-  "bg-gradient-to-r from-teal-400 to-emerald-900",
-  "bg-gradient-to-r from-fuchsia-800 to-pink-700",
-] 
-
 export function PostList({ open, posts, onCommentClick }: PostListProps) {
   if (posts.length === 0) {
     return <p>Posts not available</p>
@@ -32,18 +26,17 @@ export function PostList({ open, posts, onCommentClick }: PostListProps) {
 
   return (
     <ul className="space-y-4">
-      {posts.map((post: Post, index: number) => {
-        const bgColor = bgColors[index % bgColors.length]
+      {posts.map((post: Post) => {
         return (
           <PostCard 
             key={post.id} 
             open={open} 
             post={post} 
-            bgColor={bgColor} 
+            bgColor={post.bgColor} 
             onCommentClick={() => onCommentClick(post)} 
           /> 
         ) 
       })} 
     </ul> 
   ) 
-} 
+}
