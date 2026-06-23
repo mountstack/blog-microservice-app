@@ -8,6 +8,9 @@ export class Post {
   @Column({ type: 'varchar', length: 400 }) 
   title: string; 
 
+  @Column({ type: 'varchar', length: 500, nullable: true }) 
+  imageUrl: string; 
+
   @Column({ type: 'varchar', length: 100, default: 'bg-gradient-to-r from-gray-600 to-black' }) 
   bgColor: string; 
 

@@ -25,7 +25,7 @@ async function handleEvent(type: string, data: any) {
 
   if (type === 'UserCreated') {
     try {
-      const { id, email } = data;
+      const { id, email } = data; 
       const newUser = userRepository.create({ id, email });
       await userRepository.save(newUser);
       
@@ -63,16 +63,16 @@ async function handleEvent(type: string, data: any) {
 
   if (type === 'PostCreated') {
     try {
-      const { id, title, bgColor, userId } = data;
+      const { id, title, imageUrl = null, bgColor, userId } = data;
       const user = await userRepository.findOneBy({ id: userId });
       if (!user) throw new Error(`User ${userId} not found`); 
 
-      const newPost = postRepository.create({ id, title, bgColor, user });
+      const newPost = postRepository.create({ id, title, imageUrl, bgColor, user });
       await postRepository.save(newPost); 
 
       await userRepository.increment({ id: userId }, 'totalPosts', 1);
 
-      console.log('[PostCreated]', { id, title, userId });
+      console.log('[PostCreated]', { id, userId, title, imageUrl });
     } 
     catch (error: any) {
       console.error('[PostCreated] failed:', error.message);

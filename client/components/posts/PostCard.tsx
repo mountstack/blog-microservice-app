@@ -7,6 +7,7 @@ interface PostCardProps {
   post: {
     id: number
     title: string
+    imageUrl: string
     bgColor: string 
     totalComments: number
     createdAt: Date
@@ -22,9 +23,9 @@ interface PostCardProps {
 
 export function PostCard({ open, post, bgColor, onCommentClick }: PostCardProps) { 
   return ( 
-    <li className="rounded-lg border bg-white p-4 dark:bg-gray-800 dark:border-gray-700">
+    <li className="rounded-lg border bg-white p-4 dark:bg-gray-800 dark:border-gray-700"> 
       <PostHeader user={post.user} createdAt={post.createdAt} /> 
-      <PostContent open={open} title={post.title} bgColor={bgColor} /> 
+      <PostContent open={open} title={post.title} imageUrl={post.imageUrl} bgColor={bgColor} /> 
       <PostActions 
         postId={post.id} 
         totalComments={post.totalComments} 
@@ -32,4 +33,4 @@ export function PostCard({ open, post, bgColor, onCommentClick }: PostCardProps)
       /> 
     </li> 
   ) 
-}
+} 
