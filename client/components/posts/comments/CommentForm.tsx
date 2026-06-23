@@ -8,12 +8,26 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import Link from "next/link"
 
+interface Post { 
+  id: number 
+  title: string 
+  bgColor: string 
+  totalComments: number 
+  createdAt: Date 
+  user: {  
+    id: number 
+    name: string 
+    avatarUrl: string | null 
+  } 
+} 
+
 interface CommentFormProps { 
-  postId: number 
+  post: Post
   fetchComments: () => void 
 } 
 
-export function CommentForm({ fetchComments, postId }: CommentFormProps) {
+export function CommentForm({ post, fetchComments }: CommentFormProps) {
+  console.log('Comment :::', post);
   const { user } = useAuthStore()
   const [content, setContent] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -35,14 +49,15 @@ export function CommentForm({ fetchComments, postId }: CommentFormProps) {
         method: "POST",
         body: JSON.stringify({
           content: content.trim(),
-          postId: postId
+          postId: post.id
         }),
       })
 
       setContent(""); 
       
-      setTimeout(() => {
+      setTimeout(() => { 
         fetchComments(); 
+        post.totalComments += 1; 
       }, 500); 
     } 
     catch (err) {

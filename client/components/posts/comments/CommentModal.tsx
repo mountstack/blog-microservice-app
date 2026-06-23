@@ -1,19 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"; 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"; 
-import { PostHeader } from "../PostHeader"; 
-import { PostContent } from "../PostContent"; 
-import { CommentList } from "./CommentList"; 
-import { CommentForm } from "./CommentForm"; 
-import { useAuthStore } from "@/lib/stores/authstore";  
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { PostHeader } from "../PostHeader";
+import { PostContent } from "../PostContent";
+import { CommentList } from "./CommentList";
+import { CommentForm } from "./CommentForm";
+import { useAuthStore } from "@/lib/stores/authstore";
 
 interface CommentModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  post: {
+  post: { 
     id: number
     title: string
+    bgColor: string
+    totalComments: number
     createdAt: Date
     user: {
       id: number
@@ -21,24 +23,24 @@ interface CommentModalProps {
       avatarUrl: string | null
     }
   }
-  bgColor: string
+  bgColor: string 
 }
 
 export function CommentModal({ open, onOpenChange, post, bgColor }: CommentModalProps) {
-  const { user } = useAuthStore(); 
-  const [comments, setComments] = useState([]); 
-  const [isLoading, setIsLoading] = useState(false); 
+  const { user } = useAuthStore();
+  const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchComments = async () => {
-    setIsLoading(true); 
+    setIsLoading(true);
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/query/post/${post.id}/comments`);
-      const data = await response.json(); 
-      setComments(data.data); 
-    } 
+      const data = await response.json();
+      setComments(data.data);
+    }
     catch (error) {
       console.error("Error fetching comments:", error)
-    } 
+    }
     finally {
       setIsLoading(false)
     }
@@ -62,19 +64,19 @@ export function CommentModal({ open, onOpenChange, post, bgColor }: CommentModal
         <div className="border-b px-6 pb-4 dark:border-gray-700">
           <PostHeader user={post.user} createdAt={post.createdAt} />
           <PostContent open={open} title={post.title} bgColor={bgColor} />
-        </div> 
+        </div>
 
         <div className="flex-1 overflow-y-auto px-6 pb-4">
           <CommentList comments={comments} isLoading={isLoading} />
         </div>
 
-        <div className="border-t px-6 py-4 dark:border-gray-700"> 
-          <CommentForm 
-            postId={post.id} 
-            fetchComments={fetchComments} 
-          /> 
-        </div> 
-      </DialogContent> 
-    </Dialog> 
-  ) 
+        <div className="border-t px-6 py-4 dark:border-gray-700">
+          <CommentForm
+            post={post}
+            fetchComments={fetchComments}
+          />
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
 } 

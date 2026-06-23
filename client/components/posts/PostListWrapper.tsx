@@ -25,6 +25,7 @@ export function PostListWrapper({ posts }: PostListWrapperProps) {
   const [isModalOpen, setIsModalOpen] = useState(false); 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null); 
 
+
   const handleCommentClick = (post: Post) => { 
     setSelectedPost(post); 
     setIsModalOpen(true); 
@@ -34,14 +35,16 @@ export function PostListWrapper({ posts }: PostListWrapperProps) {
     <> 
       <PostList open={isModalOpen} posts={posts} onCommentClick={handleCommentClick} />
 
-      {selectedPost && (
-        <CommentModal
-          open={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          post={selectedPost}
-          bgColor={selectedPost.bgColor} 
-        />
-      )}
-    </>
+      {
+        selectedPost && (
+          <CommentModal
+            open={isModalOpen}
+            post={selectedPost}
+            bgColor={selectedPost.bgColor} 
+            onOpenChange={setIsModalOpen} 
+          /> 
+        ) 
+      } 
+    </> 
   ) 
-}
+} 
