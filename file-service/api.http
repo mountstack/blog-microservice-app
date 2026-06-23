@@ -1,0 +1,24 @@
+### Login
+# @name login
+
+POST http://localhost:8000/user/login
+Content-Type: application/json
+
+{
+  "email": "rijwan@gmail.com",
+  "password": "123456"
+}
+
+###
+
+POST http://localhost:8000/file/upload?feature=user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJyaWp3YW5AZ21haWwuY29tIiwiaWF0IjoxNzgyMjI0NTEwLCJleHAiOjE3ODIyNDYxMTB9.elwWTyiIaiNQ-SMAq-5WCeQ0Z3ph4zcBnLQtHNmezOU
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="file"; filename="rijwan_buddies.jpeg"
+Content-Type: image/jpeg
+
+< C:/Users/Rijwan/Downloads/rijwan_buddies.jpeg
+
+--MyBoundary--

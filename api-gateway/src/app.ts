@@ -14,15 +14,16 @@ app.use(cors({
 })); 
 app.use(Express.json()); 
 
-const { API_GATEWAY_PORT, USER_PORT, POST_PORT, COMMENT_PORT, QUERY_SERVICE_PORT } = process.env;
+const { API_GATEWAY_PORT, USER_PORT, POST_PORT, COMMENT_PORT, FILE_SERVICE_PORT, QUERY_SERVICE_PORT } = process.env;
 
 const routes: Record<string, string> = {
   '/user':    `http://localhost:${USER_PORT}`,
   '/profile': `http://localhost:${USER_PORT}`,
   '/post':    `http://localhost:${POST_PORT}`,
   '/comment': `http://localhost:${COMMENT_PORT}`,
+  '/file':    `http://localhost:${FILE_SERVICE_PORT}`,
   '/query':   `http://localhost:${QUERY_SERVICE_PORT}`,
-};
+}; 
 
 Object.entries(routes).forEach(([path, target]) => {
   app.use(path, createProxyMiddleware({
