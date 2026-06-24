@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/lib/stores/authstore"; 
 
-const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || "http://localhost:8000"
+const API_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || "http://localhost:8000"; 
 
 
 const refreshAccessToken = async (): Promise<string> => { 
@@ -76,6 +76,72 @@ export async function apiFetch<T = any>(
 
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status}`)
+  }
+
+  if (response.status === 204) { 
+    return null as T; 
+  } 
+
+  return response.json(); 
+} 
+
+
+export async function apiFetchFormData<T = any>( 
+  endpoint: string, 
+  formData: FormData, 
+  options: RequestInit = {} 
+): Promise<T> { 
+  const { accessToken } = useAuthStore.getState(); 
+
+  const headers: Record<string, string> = { 
+    ...options.headers as Record<string, string>, 
+  }; 
+
+  if (accessToken) {
+    headers["Authorization"] = accessToken;
+  }
+
+  let response = await fetch(`${API_URL}${endpoint}`, {
+    ...options,
+    method: "POST",
+    headers,
+    body: formData,
+    credentials: "include",
+  });
+
+  // If access token expired
+  if (response.status === 401) {
+    try {
+      const newToken = await refreshAccessToken();
+      useAuthStore.getState().setAccessToken(newToken);
+
+      const retryHeaders: HeadersInit = {
+        ...headers,
+        "Authorization": newToken,
+      };
+
+      response = await fetch(`${API_URL}${endpoint}`, {
+        ...options,
+        method: "POST",
+        headers: retryHeaders,
+        body: formData,
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+
+      return response.json();
+    } 
+    catch (error) {
+      useAuthStore.getState().logout();
+      throw error;
+    }
+  } 
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`); 
   }
 
   if (response.status === 204) { 

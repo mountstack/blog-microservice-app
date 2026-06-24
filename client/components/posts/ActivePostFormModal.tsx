@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/lib/stores/authstore"
-import { apiFetch } from "@/lib/api/client"
+import { apiFetch, apiFetchFormData } from "@/lib/api/client"
 
 interface ActivePostFormModalProps { 
   open: boolean 
@@ -88,29 +88,16 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
   
 
   const uploadImage = async (file: File) => {
-    setIsUploading(true)
-    setError(null)
+    setError(null); 
+    setIsUploading(true); 
 
     try {
       const formData = new FormData(); 
       formData.append("file", file); 
 
 
-      const response = await fetch("http://localhost:8000/file/upload?feature=post", {
-        method: "POST",
-        headers: { 
-          "Authorization": accessToken || "", 
-        }, 
-        body: formData 
-      }) 
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || "Failed to upload image")
-      }
-
-      const result = await response.json()
-      setImageUrl(result.data.url)
+      const result = await apiFetchFormData("/file/upload?feature=post", formData); 
+      setImageUrl(result.data.url); 
     } 
     catch (err) {
       setError(err instanceof Error ? err.message : "Failed to upload image")
