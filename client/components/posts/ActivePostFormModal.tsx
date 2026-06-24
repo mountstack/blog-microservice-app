@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation";
 import { useState, useCallback } from "react"
 import { useDropzone } from "react-dropzone";
 import {
@@ -13,10 +14,10 @@ import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/lib/stores/authstore"
 import { apiFetch } from "@/lib/api/client"
 
-interface ActivePostFormModalProps {
-  open: boolean
+interface ActivePostFormModalProps { 
+  open: boolean 
   onOpenChange: (open: boolean) => void 
-}
+} 
 
 const bgColors = [
   { name: "Black", value: "bg-gradient-to-r from-gray-600 to-black" },
@@ -40,6 +41,7 @@ const getColorStyle = (bgClass: string) => {
 }
 
 export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalProps) {
+  const router = useRouter();
   const { user } = useAuthStore()
   const [title, setTitle] = useState("")
   const [selectedColor, setSelectedColor] = useState<string>(bgColors[0].value)
@@ -144,16 +146,19 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
 
       if (imageUrl) {
         payload.imageUrl = imageUrl
-      }
+      } 
 
-      await apiFetch("/post", {
+      const createdPost = await apiFetch("/post", { 
         method: "POST",
         body: JSON.stringify(payload),
-      })
+      }) 
+
+      // console.log({createdPost});
 
       setSuccessMessage('Post created successfully');
 
       setTimeout(() => { 
+        router.refresh(); 
         setTitle(""); 
         setSuccessMessage(null); 
         setImagePreview(null); 
@@ -278,12 +283,12 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
             </div>
 
             {/* POST PREVIEW COLUMN - Right */}
-            <div className="rounded-lg bg-gray-100/60 p-4 dark:bg-gray-800">
+            <div className="rounded-lg bg-gray-100/60 p-4 dark:bg-gray-800 border">
               <p className="mb-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
                 📸 Live Preview
               </p>
 
-              <div className="overflow-hidden rounded-lg bg-white shadow dark:bg-gray-900">
+              <div className="overflow-hidden rounded-lg bg-white border dark:bg-gray-900">
                 <div className="flex items-center gap-3 px-4 py-3">
                   <div className="h-8 w-8 rounded-full bg-gray-300"></div>
                   <div>

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/stores/authstore";
 import { ActivePostFormModal } from "./ActivePostFormModal";
 
+
 export function CreatePostForm() {
   const { user } = useAuthStore();
   const [modalOpen, setModalOpen] = useState(false); 

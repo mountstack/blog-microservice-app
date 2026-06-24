@@ -24,7 +24,7 @@ export function PostContent({ open, title, imageUrl, bgColor }: PostContentProps
           <img
             src={imageUrl}
             alt={title || "Post image"}
-            className="w-full max-h-80 object-cover"
+            className="w-full max-h-200"
           />
         </div>
       )}

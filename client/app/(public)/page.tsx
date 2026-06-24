@@ -11,7 +11,7 @@ export default async function Page() {
   } 
 
   const data = await response.json(); 
-  const posts = data.posts || data; 
+  let posts = data.posts || data; 
 
   return ( 
     <div className="mx-auto my-10 max-w-2xl"> 
