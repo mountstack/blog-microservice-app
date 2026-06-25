@@ -79,7 +79,7 @@ All HTTP `GET` Request is handled by query-service.
 This separation means reads and writes can scale independently, and the query service can shape its data however best suits the client — without coupling to the write models.
 
 <div align="center">
-  <img src="./asset/CQRS_pattern_2.png" alt="CQRS Design Pattern" height="250">
+  <img src="./asset/CQRS_pattern_2.png" alt="CQRS Design Pattern" height="350">
   <br>
   <p><b>Figure: Command Query Responsibility Segregation (CQRS)</b></p> 
 </div>
