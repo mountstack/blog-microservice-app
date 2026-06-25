@@ -1,3 +1,8 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
 interface PostContentProps {
   title: string
   imageUrl?: string | null
@@ -6,28 +11,44 @@ interface PostContentProps {
 }
 
 export function PostContent({ open, title, imageUrl, bgColor }: PostContentProps) {
-  // Dynamic title height: 180px if image exists, 320px if no image
-  const titleHeight = imageUrl ? "h-45" : "h-80"
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    // Check if image is already loaded (cached)
+    if (imgRef.current && imgRef.current.complete) {
+      setImageLoaded(true);
+    }
+  }, [imageUrl]);
+
+  const titleHeight = imageUrl ? "h-45" : "h-80";
 
   return (
     <div className="overflow-hidden rounded-lg mt-5">
-      {/* Title with BG Color - Dynamic Height */}
       <div className={`flex items-center justify-center p-6 ${bgColor} ${titleHeight}`}>
         <h3 className="text-center text-2xl font-semibold text-white leading-relaxed">
           {title}
         </h3>
       </div>
 
-      {/* Image - Full width, below title */}
       {imageUrl && (
-        <div className="w-full overflow-hidden">
+        <div className="relative min-h-50 overflow-hidden">
+          {!imageLoaded && (
+            <Skeleton className="absolute inset-0 h-full w-full" />
+          )}
           <img
+            ref={imgRef}
             src={imageUrl}
-            alt={title || "Post image"}
-            className="w-full max-h-200"
+            alt={title}
+            loading="eager"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+            className={`h-full w-full object-cover transition-opacity duration-500 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            }`}
           />
         </div>
       )}
     </div>
-  )
+  );
 }
