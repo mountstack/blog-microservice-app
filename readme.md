@@ -38,7 +38,7 @@ Each service has its own `.env`. See the `.env.example` inside each service dire
 | `query-service` | 8010 | Serves all GET requests |
 
 <div align="center">
-  <img src="./asset/architecture.png" alt="CQRS Design Pattern" height="350">
+  <img src="./asset/architecture.png" alt="CQRS Design Pattern" height="500">
   <br>
   <p><b>Figure: Mount Blog - Project Architecture</b></p> 
 </div>
