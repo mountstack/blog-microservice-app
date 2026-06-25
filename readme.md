@@ -14,7 +14,10 @@ blog/
 ├── user/
 ├── post/
 ├── comment/
-├── query/
+├── file-service/
+├── query-service/
+│
+├── docker-compose.yml 
 └── README.md 
 ```
 
@@ -31,7 +34,14 @@ Each service has its own `.env`. See the `.env.example` inside each service dire
 | `post` | 8001 | Post Service |
 | `comment` | 8002 | Comment Service |
 | `user` | 8003 | User Service - Registration, login, JWT auth, token refresh <br> Profile Service - Update your profile |
+| `file-service` | 8004 | Upload photo here to MinIO, S3 compatible service |
 | `query-service` | 8010 | Serves all GET requests |
+
+<div align="center">
+  <img src="./asset/architecture.png" alt="CQRS Design Pattern" height="350">
+  <br>
+  <p><b>Figure: Mount Blog - Project Architecture</b></p> 
+</div>
 
 ---
 
@@ -43,10 +53,11 @@ Client
   ▼
 API Gateway (8000)
   │
-  ├──▶ User Service    (write)
-  ├──▶ Post Service    (write)
-  ├──▶ Comment Service (write)
-  └──▶ Query Service   (read)
+  ├──▶ User Service    (write) 
+  ├──▶ Post Service    (write) 
+  ├──▶ Comment Service (write) 
+  ├──▶ File Service    (write) 
+  └──▶ Query Service   (read) 
 
 Write Services ──▶ RabbitMQ (blog_bus) ──▶ Query Service
 ```
@@ -68,7 +79,7 @@ All HTTP `GET` Request is handled by query-service.
 This separation means reads and writes can scale independently, and the query service can shape its data however best suits the client — without coupling to the write models.
 
 <div align="center">
-  <img src="./asset/CQRS_pattern_2.png" alt="CQRS Design Pattern" height="350">
+  <img src="./asset/CQRS_pattern_2.png" alt="CQRS Design Pattern" height="250">
   <br>
   <p><b>Figure: Command Query Responsibility Segregation (CQRS)</b></p> 
 </div>
@@ -102,6 +113,8 @@ Services are fully decoupled — publishers don't know who's listening.
 | Auth | JWT (access token + refresh token rotation) |
 | ORM | TypeORM |
 | Database | PostgreSQL (one per service) |
+| Image Storage | MinIO |
+| Cloudflare Tunnel | Used this CDN service to cache images |
 | Message Bus | RabbitMQ (amqplib v2) |
 | API Gateway | Express reverse proxy |
 
@@ -112,25 +125,74 @@ Services are fully decoupled — publishers don't know who's listening.
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL
-- RabbitMQ
-- Docker
+- PostgreSQL (for services)
+- Docker Desktop (for RabbitMQ, MinIO, Cloudflare Tunnel)
 
+---
 
-### Start RabbitMQ before any service:
+### Start All Dependencies with Docker Compose
 
-Start `Docker-Engine` first. Then run the below command on terminal.
 ```bash
-# Docker (quickest)
-docker run -d --hostname rabbit --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
+# Start RabbitMQ, MinIO, and Cloudflare Tunnel
+docker-compose up -d
 ```
 
-### Run each service
+
+### This spins up:
+
+| Container |	Port |Purpose |
+|---|---|---|
+| blog-rabbitmq	| 5672, 15672	| Message broker |
+| blog-minio	| 9000, 9001	| Image storage |
+| blog-cloudflare-tunnel	| —	| Public image access via Cloudflare |
+
+### Set MinIO Bucket Public (one-time)
+
+```bash
+docker run --rm minio/mc alias set myminio http://localhost:9000 minioadmin minioadmin
+docker run --rm minio/mc anonymous set public myminio/microservice-blog-files
+```
+
+
+### Get Cloudflare Tunnel URL
+
+```bash
+docker-compose logs cloudflare-tunnel
+
+# Copy the URL (e.g., https://xxxxxx.trycloudflare.com) and update your file-service/.env:
+CLOUDFLARE_URL=https://xxxxxx.trycloudflare.com
+```
+
+### Run Each Service
 
 ```bash
 # From each service directory
 npm install
-npm run start:dev
-``` 
---- 
+npm run dev
+```
+
+### Stop All Docker Services
+
+```bash
+docker-compose down
+```
+
+### Reset Everything (clean start) 
+
+```bash
+docker-compose down
+docker volume rm minio_data blog_minio_data   # optional, deletes stored images
+docker-compose up -d
+```
+
+### Notes 
+
+- The file-service uses MinIO for image storage. Images are served via Cloudflare Tunnel for development.
+
+- For production, replace the Cloudflare Tunnel with a custom domain and Cloudflare DNS (orange cloud).
+
+- All services require their own PostgreSQL database. Use separate databases per service.
+
+- Create all database before running docker-compose. Get database names from .env of each service directory.  
+
 
