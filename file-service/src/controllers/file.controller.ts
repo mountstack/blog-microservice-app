@@ -3,6 +3,8 @@ import { nanoid } from "nanoid";
 import { Request, Response } from "express"; 
 import { minioClient, BUCKET_NAME } from "../config/minio"; 
 
+const CLOUDFLARE_URL = process.env.CLOUDFLARE_URL || `http://${process.env.MINIO_ENDPOINT || "localhost"}:${process.env.MINIO_PORT || "9000"}`;
+
 export const uploadFile = async (req: Request, res: Response) => { 
   try { 
     const file = (req as any).file; 
@@ -16,7 +18,6 @@ export const uploadFile = async (req: Request, res: Response) => {
     } 
 
     const fileExtension = path.extname(file.originalname); 
-    // const uniqueFilename = `user-${uuidv4()}${fileExtension}`; 
     const uniqueFilename = `user-${nanoid(10)}${fileExtension}`; 
     const filePath = `${feature}/${uniqueFilename}`; 
 
@@ -28,7 +29,7 @@ export const uploadFile = async (req: Request, res: Response) => {
       { "Content-Type": file.mimetype }
     ); 
 
-    const url = `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${BUCKET_NAME}/${filePath}`;
+    const url = `${CLOUDFLARE_URL}/${BUCKET_NAME}/${filePath}`;
 
     return res.status(201).json({ 
       success: true, 
@@ -51,64 +52,3 @@ export const uploadFile = async (req: Request, res: Response) => {
     }); 
   } 
 }; 
-
-// export const deleteFile = async (req: Request, res: Response) => {
-//   try {
-//     const { filename } = req.params;
-//     const userId = req.userId;
-
-//     const filePath = `users/${userId}/files/${filename}`;
-
-//     try {
-//       await minioClient.statObject(BUCKET_NAME, filePath);
-//     } catch (error) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "File not found",
-//       });
-//     }
-
-//     await minioClient.removeObject(BUCKET_NAME, filePath);
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "File deleted successfully",
-//     });
-//   } catch (error) {
-//     console.error("Delete error:", error);
-//     return res.status(500).json({
-//       success: false,
-//       message: "Failed to delete file",
-//     });
-//   }
-// };
-
-// export const getFileUrl = async (req: Request, res: Response) => {
-//   try {
-//     const { filename } = req.params;
-//     const userId = req.userId;
-
-//     const filePath = `users/${userId}/files/${filename}`;
-
-//     try {
-//       await minioClient.statObject(BUCKET_NAME, filePath);
-//     } catch (error) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "File not found",
-//       });
-//     }
-
-//     const url = `http://${process.env.MINIO_ENDPOINT || "localhost"}:${process.env.MINIO_PORT || "9000"}/${BUCKET_NAME}/${filePath}`;
-
-//     return res.status(200).json({
-//       success: true,
-//       data: { url },
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Failed to get file URL",
-//     });
-//   }
-// };

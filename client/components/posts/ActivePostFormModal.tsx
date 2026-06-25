@@ -52,7 +52,6 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
   const [isUploading, setIsUploading] = useState(false)
   const [imageUrl, setImageUrl] = useState<string | null>(null); 
 
-  const { accessToken } = useAuthStore.getState(); 
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0]
@@ -95,16 +94,15 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
       const formData = new FormData(); 
       formData.append("file", file); 
 
-
       const result = await apiFetchFormData("/file/upload?feature=post", formData); 
-      setImageUrl(result.data.url); 
+      setImageUrl(result?.data?.url); 
     } 
     catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to upload image")
-      setImagePreview(null)
+      setError(err instanceof Error ? err.message : "Failed to upload image"); 
+      setImagePreview(null); 
     } 
     finally {
-      setIsUploading(false)
+      setIsUploading(false); 
     }
   }
 

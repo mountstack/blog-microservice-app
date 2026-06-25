@@ -2,13 +2,26 @@
 CREATE DATABASE "";
 
 
+# MinIO 
 docker run -d --name blog-minio -p 9000:9000 -p 9001:9001 -e "MINIO_ROOT_USER=minioadmin" -e "MINIO_ROOT_PASSWORD=minioadmin" -v minio_data:/data minio/minio server /data --console-address ":9001"
 
 mc anonymous set download myminio/microservice-blog-files
 
+
+# rabbitmq 
 docker run -d --rm --name blog-message-broker -p 5672:5672 -p 15672:15672 rabbitmq:3-management
 
 
+# cloudflare cdn cache 
+docker run -d --name cloudflare-tunnel --restart unless-stopped cloudflare/cloudflared tunnel --url http://host.docker.internal:9000
 
+docker logs cloudflare-tunnel 
+
+-- https://uncertainty----nascar.trycloudflare.com --
+I got this url. 
+
+
+
+# start docker by command 
 Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe" -ArgumentList "--minimized" -WindowStyle Hidden
 

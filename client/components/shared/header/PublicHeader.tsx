@@ -9,7 +9,7 @@ export function PublicHeader() {
 
   return (
     <header className="border-b">
-      <div className="max-w-175 mx-auto flex h-16 items-center justify-between">
+      <div className="max-w-2xl mx-auto flex h-16 items-center justify-between">
         <Link href="/" className="text-xl font-bold">
           Mount Blog 
         </Link>
