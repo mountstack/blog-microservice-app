@@ -10,7 +10,7 @@ export class UserProjection {
   @PrimaryColumn({ type: "int" })
   id: number;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ length: 100, default: '' })
   name: string; 
 
   @Column({ type: 'varchar', unique: true, length: 100 }) 
@@ -33,6 +33,9 @@ export class UserProjection {
 
   @Column({ type: 'int', default: 0 }) 
   totalPosts: number; 
+
+  @Column({ type: 'int', default: 10 }) 
+  profileCompletion: number;
 
   @CreateDateColumn({ type: "timestamptz" }) 
   createdAt: Date; 

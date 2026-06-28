@@ -5,10 +5,7 @@ import { Profile } from './Profile';
 @Entity({name: 'users'})
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ default: "", length: 100 })
-  name: string;
+  id: number; 
 
   @Column({ default: false }) 
   isSuspended: boolean;

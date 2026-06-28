@@ -13,6 +13,9 @@ export class Profile {
   @JoinColumn({ name: 'userId' }) 
   user: User; 
 
+  @Column({ default: "", length: 100 }) 
+  name: string; 
+
   @Column({length: 10, nullable: true}) 
   gender: string; 
 

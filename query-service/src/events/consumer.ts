@@ -23,16 +23,16 @@ async function handleEvent(type: string, data: any) {
   const postRepository = appDataSource.getRepository(PostProjection);
   const commentRepository = appDataSource.getRepository(Comment);
 
-  if (type === 'UserCreated') {
-    try {
+  if (type === 'UserCreated') { 
+    try { 
       const { id, email } = data; 
-      const newUser = userRepository.create({ id, email });
-      await userRepository.save(newUser);
+      const newUser = userRepository.create({ id, email }); 
+      await userRepository.save(newUser); 
       
-      console.log('[UserCreated]', { id, email });
+      console.log('[UserCreated]', { id, email }); 
     } 
     catch (error: any) { 
-      console.error('[UserCreated] failed:', error.message);
+      console.error('[UserCreated] failed:', error.message); 
     } 
   } 
 
@@ -46,11 +46,21 @@ async function handleEvent(type: string, data: any) {
         return; 
       } 
 
-      if (name) user.name = name; 
       if (bio) user.bio = bio; 
+      if (name) user.name = name; 
       if (gender) user.gender = gender; 
       if (avatarUrl) user.avatarUrl = avatarUrl; 
       if (phoneNumber) user.phoneNumber = phoneNumber; 
+
+      // Re-calculate score always
+      let score = 10; 
+      if (user.name && user.name.trim() !== "") score += 20; 
+      if (user.avatarUrl && user.avatarUrl.trim() !== "") score += 25; 
+      if (user.bio && user.bio.trim() !== "") score += 20; 
+      if (user.gender && user.gender.trim() !== "") score += 10; 
+      if (user.phoneNumber && user.phoneNumber.trim() !== "") score += 15; 
+
+      user.profileCompletion = Math.min(score, 100); 
 
       await userRepository.save(user); 
 

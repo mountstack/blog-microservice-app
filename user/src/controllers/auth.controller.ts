@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
+import { LessThan } from 'typeorm';
 import { EntityManager } from 'typeorm';
 
-import { appDataSource } from "../config/database";
 import { User } from "../entities/User";
-import { RefreshToken } from "../entities/RefreshToken";
-import { LessThan } from 'typeorm';
-import { publishEvent } from '../config/rabbitmq';
 import { Profile } from '../entities/Profile';
+import { publishEvent } from '../config/rabbitmq';
+import { appDataSource } from "../config/database";
+import { RefreshToken } from "../entities/RefreshToken";
 
 const userRepository = appDataSource.getRepository(User);
 const refreshTokenRepository = appDataSource.getRepository(RefreshToken);
@@ -31,6 +31,7 @@ export const registration = async (req: Request, res: Response) => {
       const savedUser = await transactionalEntityManager.save(User, newUser); 
 
       const profileData: Partial<Profile> = { 
+        userId: savedUser.id, 
         user: savedUser 
       }; 
 
@@ -69,7 +70,6 @@ export const login = async (req: Request, res: Response) => {
       id: true, 
       email: true, 
       password: true, 
-      name: true, 
       isSuspended: true 
     } 
   }); 
@@ -123,7 +123,6 @@ export const login = async (req: Request, res: Response) => {
     accessToken: `Bearer ${accessToken}`, 
     user: { 
       id: user.id, 
-      name: user.name, 
       email: user.email,
       isSuspended: user.isSuspended,
     } 

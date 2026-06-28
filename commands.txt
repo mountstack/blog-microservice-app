@@ -1,6 +1,9 @@
 
-
-CREATE DATABASE "";
+CREATE DATABASE "microservice-blog-users";
+CREATE DATABASE "microservice-blog-posts";
+CREATE DATABASE "microservice-blog-comments";
+CREATE DATABASE "microservice-blog-querydb";
+--------------
 
 # start docker by command 
 Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe" -ArgumentList "--minimized" -WindowStyle Hidden

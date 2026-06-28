@@ -53,7 +53,7 @@ export default function LoginPage() {
 
       const result = await response.json(); 
       login(result.user, result.accessToken); 
-      router.push("/");  
+      router.push("/profile"); 
     } 
     catch (err) { 
       setError(err instanceof Error ? err.message : "Something went wrong"); 
