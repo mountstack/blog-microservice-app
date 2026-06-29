@@ -2,9 +2,9 @@ import "reflect-metadata";
 
 import dotenv from "dotenv";
 import { DataSource } from "typeorm"; 
-import { UserProjection } from "../entities/UserProjection";
-import { PostProjection } from "../entities/PostProjection";
-import { Comment } from "../entities/Comment";
+import { UserProjection } from "../APIs/entities/UserProjection";
+import { PostProjection } from "../APIs/entities/PostProjection";
+import { Comment } from "../APIs/entities/Comment";
 
 dotenv.config();
 

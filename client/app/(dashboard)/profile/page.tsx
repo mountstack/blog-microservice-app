@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ProfileHeader } from "@/components/profile/ProfileHeader";
 import { ProfileCard } from "@/components/profile/ProfileCard";
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
+import { offProfileUpdated, onProfileUpdated } from "@/lib/socket/client";
 
 interface ProfileData {
   id: number;
@@ -44,7 +45,7 @@ export default function ProfilePage() {
         bio: data.bio || "",
         gender: data.gender || "",
         phoneNumber: data.phoneNumber || "",
-      }); 
+      });
     }
     catch (err) {
       console.error("Failed to fetch profile:", err);
@@ -54,35 +55,65 @@ export default function ProfilePage() {
     }
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     if (user?.id) {
       fetchProfile();
     }
   }, [user?.id]);
 
+  useEffect(() => {
+    const handleProfileUpdate = (data: any) => { 
+      setProfile((prev) => {
+        if (!prev) return null;
+        return { 
+          ...prev,
+          name: data.name || prev.name,
+          bio: data.bio || prev.bio,
+          gender: data.gender || prev.gender,
+          avatarUrl: data.avatarUrl || prev.avatarUrl,
+          phoneNumber: data.phoneNumber || prev.phoneNumber,
+          profileCompletion: data.profileCompletion || prev.profileCompletion,
+        };
+      }); 
+
+      // Also update form data
+      setFormData((prev) => ({
+        ...prev,
+        name: data.name || prev.name,
+        bio: data.bio || prev.bio,
+        gender: data.gender || prev.gender,
+        phoneNumber: data.phoneNumber || prev.phoneNumber,
+      }));
+    };
+
+    onProfileUpdated(handleProfileUpdate);
+
+    return () => {
+      offProfileUpdated(handleProfileUpdate);
+    };
+  }, []);
+
   const handleSave = async () => {
     setSaving(true);
     setError("");
-
-    console.log(formData);
 
     try {
       await apiFetch("/profile", {
         method: "PATCH",
         body: JSON.stringify(formData),
       });
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // await new Promise(resolve => setTimeout(resolve, 500));
 
-      await fetchProfile(); 
-      setEditOpen(false); 
-    } 
+      // await fetchProfile();
+      setEditOpen(false);
+    }
     catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     }
     finally {
       setSaving(false);
     }
-  }; 
+  };
 
   const handleAvatarUpdate = (newAvatarUrl: string) => {
     setProfile((prev) => {

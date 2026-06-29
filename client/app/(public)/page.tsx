@@ -6,12 +6,14 @@ export default async function Page() {
     next: { revalidate: 0 } 
   }) 
 
-  if (!response.ok) { 
-    throw new Error("Failed to fetch posts"); 
-  } 
+  // if (!response.ok) { 
+  //   throw new Error("Failed to fetch posts"); 
+  // } 
 
   const data = await response.json(); 
   let posts = data.posts || data; 
+
+  if(!posts) return; 
 
   return ( 
     <div className="mx-auto my-10 max-w-2xl"> 

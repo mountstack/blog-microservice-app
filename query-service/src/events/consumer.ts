@@ -1,7 +1,8 @@
 import { Channel } from 'amqplib'; 
-import { UserProjection } from '../entities/UserProjection'; 
-import { PostProjection } from '../entities/PostProjection'; 
-import { Comment } from '../entities/Comment'; 
+import { io } from "../websocket/app"; 
+import { UserProjection } from '../APIs/entities/UserProjection'; 
+import { PostProjection } from '../APIs/entities/PostProjection'; 
+import { Comment } from '../APIs/entities/Comment'; 
 import { appDataSource } from '../config/database'; 
 
 export async function startConsumer(channel: Channel): Promise<void> {
@@ -38,7 +39,7 @@ async function handleEvent(type: string, data: any) {
 
   if (type === 'ProfileUpdated') { 
     try { 
-      const { userId, name, bio, gender, avatarUrl, phoneNumber } = data; 
+      const { userId } = data; 
       const user = await userRepository.findOne({ where: { id: userId } }); 
       
       if (!user) { 
@@ -46,25 +47,22 @@ async function handleEvent(type: string, data: any) {
         return; 
       } 
 
-      if (bio) user.bio = bio; 
-      if (name) user.name = name; 
-      if (gender) user.gender = gender; 
-      if (avatarUrl) user.avatarUrl = avatarUrl; 
-      if (phoneNumber) user.phoneNumber = phoneNumber; 
+      const updatedUser = profileUpdateDataWithScore(data, user); 
+      await userRepository.save(updatedUser); 
 
-      // Re-calculate score always
-      let score = 10; 
-      if (user.name && user.name.trim() !== "") score += 20; 
-      if (user.avatarUrl && user.avatarUrl.trim() !== "") score += 25; 
-      if (user.bio && user.bio.trim() !== "") score += 20; 
-      if (user.gender && user.gender.trim() !== "") score += 10; 
-      if (user.phoneNumber && user.phoneNumber.trim() !== "") score += 15; 
+      // web-socket. send data to frontend 
+      io && io.to(`user:${userId}`).emit("profile-updated", { 
+        userId, 
+        bio: updatedUser.bio, 
+        name: updatedUser.name, 
+        email: updatedUser.email, 
+        gender: updatedUser.gender, 
+        avatarUrl: updatedUser.avatarUrl, 
+        phoneNumber: updatedUser.phoneNumber, 
+        profileCompletion: updatedUser.profileCompletion, 
+      }); 
 
-      user.profileCompletion = Math.min(score, 100); 
-
-      await userRepository.save(user); 
-
-      console.log('[ProfileUpdated]', user); 
+      console.log('[ProfileUpdated]', updatedUser); 
     } 
     catch (error: any) { 
       console.error('[ProfileUpdated] failed:', error.message);
@@ -106,4 +104,27 @@ async function handleEvent(type: string, data: any) {
       console.error('[CommentCreated] failed:', error.message);
     }
   } 
+} 
+
+
+function profileUpdateDataWithScore(data: any, user: any): any { 
+  const { userId, name, bio, gender, avatarUrl, phoneNumber } = data; 
+
+  if (bio) user.bio = bio; 
+  if (name) user.name = name; 
+  if (gender) user.gender = gender; 
+  if (avatarUrl) user.avatarUrl = avatarUrl; 
+  if (phoneNumber) user.phoneNumber = phoneNumber; 
+
+  // Re-calculate score always
+  let score = 10; 
+  if (user.name && user.name.trim() !== "") score += 20; 
+  if (user.avatarUrl && user.avatarUrl.trim() !== "") score += 25; 
+  if (user.bio && user.bio.trim() !== "") score += 20; 
+  if (user.gender && user.gender.trim() !== "") score += 10; 
+  if (user.phoneNumber && user.phoneNumber.trim() !== "") score += 15; 
+
+  user.profileCompletion = Math.min(score, 100); 
+
+  return user; 
 } 

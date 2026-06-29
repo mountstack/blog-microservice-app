@@ -13,10 +13,10 @@ export function ProfileCompletion({ completion }: ProfileCompletionProps) {
       </div>
       <div className="mt-1 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
         <div
-          className="h-2 rounded-full bg-blue-600 transition-all"
+          className="h-1.5 rounded-full bg-blue-600 transition-all"
           style={{ width: `${completion}%` }}
         />
       </div>
     </div>
   );
-}
+} 

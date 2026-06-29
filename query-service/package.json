@@ -1,9 +1,9 @@
 {
   "name": "query service",
   "version": "1.0.0",
-  "main": "app.ts",
+  "main": "index.ts",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/app.ts"
+    "dev": "nodemon --exec ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "nodemon": "^3.1.14",
     "pg": "^8.21.0",
     "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.3",
     "typeorm": "^1.0.0"
   },
   "devDependencies": {

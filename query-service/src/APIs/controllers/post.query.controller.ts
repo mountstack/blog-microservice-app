@@ -1,9 +1,9 @@
 import "reflect-metadata";
 
-import { Request, Response } from "express";
-import { appDataSource } from "../config/database";
-import { PostProjection } from "../entities/PostProjection";
-import { Comment } from "../entities/Comment";
+import { Request, Response } from "express"; 
+import { appDataSource } from "../../config/database"; 
+import { PostProjection } from "../entities/PostProjection"; 
+import { Comment } from "../entities/Comment"; 
 
 export const findPosts = async (req: Request, res: Response) => {
   try {

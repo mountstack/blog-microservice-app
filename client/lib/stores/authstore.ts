@@ -1,5 +1,6 @@
 import { create } from "zustand"; 
 import { devtools, persist } from "zustand/middleware"; 
+import { connectSocket, disconnectSocket } from "../socket/client";
 
 interface User {
   id: string
@@ -29,10 +30,14 @@ const createStore = (set: any) => ({
   accessToken: null,
   isAuthenticated: false,
   setAccessToken: (accessToken: string) => set({ accessToken }),
-  login: (user: User, accessToken: string) =>
-    set({ user, accessToken, isAuthenticated: true }),
-  logout: () =>
-    set({ user: null, accessToken: null, isAuthenticated: false }),
+  login: (user: User, accessToken: string) => { 
+    const socket = connectSocket(user.id.toString()); 
+    set({ user, accessToken, isAuthenticated: true }); 
+  },
+  logout: () => { 
+    disconnectSocket();
+    set({ user: null, accessToken: null, isAuthenticated: false })
+  }
 }); 
 
 const isDevelopment = process.env.NODE_ENV === "development"; 
@@ -45,17 +50,3 @@ export const useAuthStore = create<AuthState>()(
     { name: "AuthStore" } 
   ) as any 
 ); 
-
-// export const useAuthStore = create<AuthState>()( 
-//   devtools( 
-//     (set) => ({ 
-//       user: null, 
-//       accessToken: null, 
-//       isAuthenticated: false, 
-//       setAccessToken: (accessToken: string) => set({ accessToken }),
-//       login: (user, accessToken) => set({ user, accessToken, isAuthenticated: true }), 
-//       logout: () => set({ user: null, accessToken: null, isAuthenticated: false }), 
-//     }),  
-//     { name: "AuthStore" } 
-//   ) 
-// ) 
