@@ -15,11 +15,11 @@ io.on("connection", (socket) => {
   const userId = socket.handshake.query.userId as string;
 
   if (userId) { 
-    socket.join(`user:${userId}`);
-    console.log(`[WebSocket] User ${userId} joined room: user:${userId}`);
-  }
+    socket.join(`user:${userId}`); 
+    console.log(`[WebSocket] User ${userId} joined room: user:${userId}`); 
+  } 
 
-  socket.on("disconnect", () => {
-    console.log("[WebSocket] User disconnected: ", socket.id);
-  });
+  socket.on("disconnect", () => { 
+    console.log("[WebSocket] User disconnected: ", socket.id); 
+  }); 
 }); 

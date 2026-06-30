@@ -101,10 +101,7 @@ export default function ProfilePage() {
       await apiFetch("/profile", {
         method: "PATCH",
         body: JSON.stringify(formData),
-      });
-      // await new Promise(resolve => setTimeout(resolve, 500));
-
-      // await fetchProfile();
+      }); 
       setEditOpen(false);
     }
     catch (err) {
@@ -170,4 +167,4 @@ export default function ProfilePage() {
       />
     </div>
   );
-}
+} 

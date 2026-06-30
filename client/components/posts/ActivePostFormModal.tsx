@@ -133,24 +133,21 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
         payload.imageUrl = imageUrl
       } 
 
-      const createdPost = await apiFetch("/post", { 
+      await apiFetch("/post", { 
         method: "POST",
         body: JSON.stringify(payload),
       }) 
 
-      // console.log({createdPost});
-
       setSuccessMessage('Post created successfully');
 
       setTimeout(() => { 
-        router.refresh(); 
         setTitle(""); 
         setSuccessMessage(null); 
         setImagePreview(null); 
         setImageUrl(null); 
         onOpenChange(false); 
         setSelectedColor(bgColors[0].value); 
-      }, 1200) 
+      }, 300); 
     } 
     catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
@@ -158,7 +155,7 @@ export function ActivePostFormModal({ open, onOpenChange }: ActivePostFormModalP
     finally {
       setIsLoading(false)
     }
-  }
+  } 
 
   // Disable only if uploading OR submitting. Image is NOT required.
   const isDisabled = !title.trim() || isUploading || isLoading

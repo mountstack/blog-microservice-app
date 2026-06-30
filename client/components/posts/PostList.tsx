@@ -6,7 +6,8 @@ interface Post {
   bgColor: string 
   totalComments: number 
   createdAt: Date 
-  user: {  
+  imageUrl: string 
+  user: { 
     id: number 
     name: string 
     avatarUrl: string | null 

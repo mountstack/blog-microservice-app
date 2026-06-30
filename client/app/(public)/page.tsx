@@ -6,14 +6,12 @@ export default async function Page() {
     next: { revalidate: 0 } 
   }) 
 
-  // if (!response.ok) { 
-  //   throw new Error("Failed to fetch posts"); 
-  // } 
+  if (!response.ok) { 
+    throw new Error("Failed to fetch posts"); 
+  } 
 
   const data = await response.json(); 
-  let posts = data.posts || data; 
-
-  if(!posts) return; 
+  let posts = data.posts || []; 
 
   return ( 
     <div className="mx-auto my-10 max-w-2xl"> 
@@ -23,7 +21,7 @@ export default async function Page() {
       </div> 
 
       <h2 className="mb-4 pt-10 text-xl font-bold">Posts</h2> 
-      <PostListWrapper posts={posts} />  
+      <PostListWrapper posts={posts} /> 
     </div> 
   ) 
 } 
