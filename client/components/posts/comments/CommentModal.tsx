@@ -7,6 +7,8 @@ import { PostContent } from "../PostContent";
 import { CommentList } from "./CommentList";
 import { CommentForm } from "./CommentForm";
 import { useAuthStore } from "@/lib/stores/authstore";
+import { Socket } from "socket.io-client";
+import { getSocket } from "@/lib/socket/client";
 
 interface CommentModalProps {
   open: boolean
@@ -15,8 +17,9 @@ interface CommentModalProps {
     id: number
     title: string
     bgColor: string
-    totalComments: number
-    createdAt: Date
+    totalComments: number 
+    createdAt: Date 
+    imageUrl?: string | null
     user: {
       id: number
       name: string
@@ -26,10 +29,47 @@ interface CommentModalProps {
   bgColor: string 
 }
 
+interface Comment {
+  id: number
+  postId: number
+  content: string
+  createdAt: Date 
+  user: {
+    id: number
+    name: string
+    avatarUrl: string | null
+  }
+} 
+
 export function CommentModal({ open, onOpenChange, post, bgColor }: CommentModalProps) {
-  const { user } = useAuthStore();
-  const [comments, setComments] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useAuthStore(); 
+  const [comments, setComments] = useState<any[]>([]); 
+  const [isLoading, setIsLoading] = useState(false); 
+
+  useEffect(() => { 
+    let cancelled = false;
+    let socket: Socket | null = null; 
+
+    const handleComment = (newComment: Comment) => { 
+      if (newComment.postId !== post.id) return;
+      setComments((prev) => [newComment, ...prev]); 
+    } 
+
+    getSocket() 
+      .then(skt => { 
+        if (cancelled) return;
+        socket = skt; 
+        socket.on('comment-created', handleComment); 
+      }) 
+      .catch(err => { 
+        console.log(err);
+      })
+    
+    return () => { 
+      cancelled = true; 
+      socket?.off('comment-created', handleComment); 
+    } 
+  }, []) 
 
   const fetchComments = async () => {
     setIsLoading(true);
@@ -44,7 +84,7 @@ export function CommentModal({ open, onOpenChange, post, bgColor }: CommentModal
     finally {
       setIsLoading(false)
     }
-  }
+  } 
 
   useEffect(() => {
     if (open) {
@@ -72,8 +112,7 @@ export function CommentModal({ open, onOpenChange, post, bgColor }: CommentModal
 
         <div className="border-t px-6 py-4 dark:border-gray-700">
           <CommentForm
-            post={post}
-            fetchComments={fetchComments}
+            post={post} 
           />
         </div>
       </DialogContent>

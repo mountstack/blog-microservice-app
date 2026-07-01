@@ -71,9 +71,9 @@ async function handleEvent(type: string, data: any) {
 
   if (type === 'PostCreated') {
     try {
-      const { id, title, imageUrl = null, bgColor, userId } = data;
-      const user = await userRepository.findOneBy({ id: userId });
-      if (!user) throw new Error(`User ${userId} not found`);
+      const { id, title, imageUrl = null, bgColor, userId } = data; 
+      const user = await userRepository.findOneBy({ id: userId }); 
+      if (!user) throw new Error(`User ${userId} not found`); 
 
       const newPost = postRepository.create({ id, title, imageUrl, bgColor, user });
       const createdPost = await postRepository.save(newPost); 
@@ -105,22 +105,42 @@ async function handleEvent(type: string, data: any) {
 
   if (type === 'CommentCreated') {
     try {
-      const { id, content, postId, userId } = data;
-      const newComment = commentRepository.create({
-        id, content,
-        user: { id: userId } as UserProjection,
-        post: { id: postId } as PostProjection,
-      });
-      await commentRepository.save(newComment);
+      const { id, content, postId, userId } = data; 
 
-      await postRepository.increment({ id: postId }, 'totalComments', 1);
-      console.log('[CommentCreated]', { id, postId, userId });
-    }
+      const user = await userRepository.findOneBy({ id: userId }); 
+      if (!user) throw new Error(`User with id ${userId} not found`); 
+
+      const newComment = commentRepository.create({ 
+        id, content, 
+        user: { id: userId } as UserProjection, 
+        post: { id: postId } as PostProjection, 
+      }); 
+      const createdComment = await commentRepository.save(newComment);
+
+      await postRepository.increment({ id: postId }, 'totalComments', 1); 
+      const updatedPost = await postRepository.findOneBy({ id: postId }); 
+
+      io && io.emit("comment-created", { 
+        userId, 
+        postId: postId, 
+        id: createdComment.id, 
+        content: createdComment.content, 
+        createdAt: createdComment.createdAt, 
+        totalComments: updatedPost?.totalComments || 1, 
+        user: { 
+          id: user.id, 
+          name: user.name, 
+          avatarUrl: user.avatarUrl 
+        } 
+      }); 
+
+      console.log('[CommentCreated]', { id, content, postId, userId }); 
+    } 
     catch (error: any) {
       console.error('[CommentCreated] failed:', error.message);
     }
-  }
-}
+  } 
+} 
 
 
 function profileUpdateDataWithScore(data: any, user: any): any {

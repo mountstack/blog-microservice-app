@@ -30,7 +30,6 @@ export const connectSocket = (userId: string): Socket => {
  * Returns a connected socket, retrying every 2s up to 5 times (10s total).
  * Rejects if it's still not connected after that.
  */ 
-// export const getSocket = (): Socket | null => socket; 
 export const getSocket = (): Promise<Socket> => { 
   return new Promise((resolve, reject) => { 
     if (socket?.connected) {

@@ -22,12 +22,10 @@ interface Post {
 } 
 
 interface CommentFormProps { 
-  post: Post
-  fetchComments: () => void 
+  post: Post 
 } 
 
-export function CommentForm({ post, fetchComments }: CommentFormProps) {
-  console.log('Comment :::', post);
+export function CommentForm({ post }: CommentFormProps) { 
   const { user } = useAuthStore()
   const [content, setContent] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -54,11 +52,7 @@ export function CommentForm({ post, fetchComments }: CommentFormProps) {
       })
 
       setContent(""); 
-      
-      setTimeout(() => { 
-        fetchComments(); 
-        post.totalComments += 1; 
-      }, 500); 
+      post.totalComments += 1; 
     } 
     catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong")
