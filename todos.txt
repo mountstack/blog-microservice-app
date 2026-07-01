@@ -5,16 +5,17 @@ docker run -d --name blog-message-broker -p 5672:5672 -p 15672:15672 rabbitmq:3.
 - Post 
 - Commente 
 - Query Service 
+- User Profile 
+- Real Time Post & Comment Display  
+- Real Time Profile Update  
 
 ===================== 
 ==== Future Task ==== 
 ===================== 
 
-- User Profile 
 - Activity Log 
 - Up vote & Down vote 
 - User Role 
 - Admin can block user 
 - Notification Service 
-- Real Time Comment Display 
 - Logger 
