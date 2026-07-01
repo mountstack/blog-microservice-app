@@ -6,7 +6,7 @@
     "dev": "nodemon --exec ts-node src/app.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Rijwan Hossain",
   "license": "ISC",
   "description": "",
   "dependencies": {
